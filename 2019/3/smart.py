@@ -42,6 +42,9 @@ def get_line_data(coords):
 w1_coords = get_coordinates((wires[0]))
 w2_coords = get_coordinates((wires[1]))
 
+print(w1_coords)
+print(w2_coords)
+
 line1_data = get_line_data(w1_coords)
 line2_data = get_line_data(w2_coords)
 
@@ -76,14 +79,14 @@ def get_cross_coords(line1, line2):
         intersection = [x, y]
         return intersection
     else:
-        x = B2 * C1 - B1 * C2 / det
-        y = A1 * C2 - A2 * C1 / det
+        x = (B2 * C1 - B1 * C2) / det
+        y = (A1 * C2 - A2 * C1) / det
         intersection = [x, y]
         return intersection
 
 
 for i in line1_data:
     for j in line2_data:
-        result = get_cross_coords(line1_data[i], line2_data[j])
-        if result[0] != 0 and result[1] != 0:
-            print('intersection found %s %s', result[i], result[j])
+        result = get_cross_coords(i, j)
+        # if result[0] != 0 and result[1] != 0:
+        print('intersection found: ', result)
