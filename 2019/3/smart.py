@@ -9,7 +9,7 @@ def get_coordinates(wire):
     wire_data = wire.split(',')
     for item in wire_data:
         direction = item[0]
-        steps = int(item[1:3])
+        steps = int(item[1:5])
 
         if direction == 'R':
             curr_x += steps
@@ -63,12 +63,8 @@ def get_cross_coords(line1, line2):
         x = int((B2 * C1 - B1 * C2) / det)
         y = int((A1 * C2 - A2 * C1) / det)
 
-        on_line_1 = False
-        on_line_2 = False
-        if dist_two_p(l1x1, l1y1, x, y) + dist_two_p(l1x2, l1y2, x, y) == dist_two_p(l1x1, l1y1, l1x2, l1y2):
-            on_line_1 = True
-        if dist_two_p(l2x1, l2y1, x, y) + dist_two_p(l2x2, l2y2, x, y) == dist_two_p(l2x1, l2y1, l2x2, l2y2):
-            on_line_2 = True
+        on_line_1 = check_point_between_2_point(x, y, l1x1, l1y1, l1x2, l1y2)
+        on_line_2 = check_point_between_2_point(x, y, l2x1, l2y1, l2x2, l2y2)
 
         if on_line_1 and on_line_2:
             intersection = [x, y]
@@ -76,6 +72,13 @@ def get_cross_coords(line1, line2):
         else:
             intersection = [0, 0]
             return intersection
+
+
+def check_point_between_2_point(x, y, x1, y1, x2, y2):
+    if dist_two_p(x, y, x1, y1) + dist_two_p(x, y, x2, y2) == dist_two_p(x1, y1, x2, y2):
+        return True
+    else:
+        return False
 
 
 def dist_two_p(x1, y1, x2, y2):
@@ -87,38 +90,84 @@ def get_intersection_list(line1, line2):
     for i in line1:
         for j in line2:
             result = get_cross_coords(i, j)
-            if result[0] != 0 and result[1] != 0:
+            if result[0] + result[1] > result[0] or result[0] + result[1] > result[1]:
                 intersections.append(result)
     return intersections
 
 
 def min_manhattan(points):
     min_man = 100000
+    min_x = 100000
+    min_y = 100000
     for point in points:
-        if point[0] + point[1] < min_man:
-            min_man = point[0] + point[1]
-    return min_man
+        if abs(point[0]) + abs(point[1]) < min_man:
+            min_man = abs(point[0]) + abs(point[1])
+            min_x = abs(point[0])
+            min_y = abs(point[1])
+    return [min_x, min_y, min_man]
+
+
+def get_min_distance_to_intersection(wire_data, intersections):
+    wire1 = wire_data[0]
+    wire2 = wire_data[1]
+
+    print('NEW LINE')
+    min_dist = 100000
+    for item in intersections:
+        curr_dist = get_steps_to_intersection(wire1, item) + get_steps_to_intersection(wire2, item)
+        if curr_dist < min_dist:
+            min_dist = curr_dist
+            print('new min dist: ', min_dist)
+        # else:
+        #     print('min dist not beaten: ', curr_dist)
+    return min_dist
+
+
+def get_steps_to_intersection(wire_data, intersection):
+    int_x = intersection[0]
+    int_y = intersection[1]
+    steps = 0
+    print('new dist attempt')
+    for line in wire_data:
+        x1 = line[0]
+        y1 = line[1]
+        x2 = line[2]
+        y2 = line[3]
+        if check_point_between_2_point(int_x, int_y, x1, y1, x2, y2):
+            steps += dist_two_p(x1, y1, int_x, int_y)
+            print(dist_two_p(x1, y1, int_x, int_y))
+            return int(steps)
+        else:
+            steps += dist_two_p(x1, y1, x2, y2)
+            print(dist_two_p(x1, y1, x2, y2))
+
 
 
 w1_coords = get_coordinates((wires[0]))
 w2_coords = get_coordinates((wires[1]))
 
 
-print(w1_coords)
-print(w2_coords)
+# print(w1_coords)
+# print(w2_coords)
 
 line1_data = get_line_data(w1_coords)
 line2_data = get_line_data(w2_coords)
 
 print(line1_data)
 print(line2_data)
-
-
 print(get_intersection_list(line1_data, line2_data))
 
 intersection_points = get_intersection_list(line1_data, line2_data)
 
+min_manhattan_data = min_manhattan(intersection_points)
+print(min_manhattan_data)
 
-print(min_manhattan(intersection_points))
+target_x = min_manhattan_data[0]
+target_y = min_manhattan_data[1]
+shortest_dist = min_manhattan_data[2]
 
+print('shortest dist to intersection: ', shortest_dist)
+
+min_dist_to_intersection = get_min_distance_to_intersection([line1_data, line2_data], intersection_points)
+print('total steps to closest intersection: ', min_dist_to_intersection)
 
