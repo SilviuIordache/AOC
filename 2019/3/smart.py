@@ -1,7 +1,5 @@
+import math
 wires = open('input.txt', 'r').read().strip().split('\n')
-
-origin_x = 0
-origin_y = 0
 
 
 def get_coordinates(wire):
@@ -18,10 +16,10 @@ def get_coordinates(wire):
         if direction == 'L':
             curr_x -= steps
         if direction == 'U':
-            curr_y -= steps
-        if direction == 'D':
             curr_y += steps
-        wire_coordinates.append([curr_y, curr_x])
+        if direction == 'D':
+            curr_y -= steps
+        wire_coordinates.append([curr_x, curr_y])
 
     return wire_coordinates
 
@@ -35,21 +33,6 @@ def get_line_data(coords):
         last_x = item[0]
         last_y = item[1]
     return data
-
-
-
-
-w1_coords = get_coordinates((wires[0]))
-w2_coords = get_coordinates((wires[1]))
-
-print(w1_coords)
-print(w2_coords)
-
-line1_data = get_line_data(w1_coords)
-line2_data = get_line_data(w2_coords)
-
-print(line1_data)
-print(line2_data)
 
 
 def get_cross_coords(line1, line2):
@@ -73,20 +56,69 @@ def get_cross_coords(line1, line2):
 
     det = A1 * B2 - A2 * B1
 
-    x = 0
-    y = 0
     if det == 0:
-        intersection = [x, y]
+        intersection = [0, 0]
         return intersection
     else:
-        x = (B2 * C1 - B1 * C2) / det
-        y = (A1 * C2 - A2 * C1) / det
-        intersection = [x, y]
-        return intersection
+        x = int((B2 * C1 - B1 * C2) / det)
+        y = int((A1 * C2 - A2 * C1) / det)
+
+        on_line_1 = False
+        on_line_2 = False
+        if dist_two_p(l1x1, l1y1, x, y) + dist_two_p(l1x2, l1y2, x, y) == dist_two_p(l1x1, l1y1, l1x2, l1y2):
+            on_line_1 = True
+        if dist_two_p(l2x1, l2y1, x, y) + dist_two_p(l2x2, l2y2, x, y) == dist_two_p(l2x1, l2y1, l2x2, l2y2):
+            on_line_2 = True
+
+        if on_line_1 and on_line_2:
+            intersection = [x, y]
+            return intersection
+        else:
+            intersection = [0, 0]
+            return intersection
 
 
-for i in line1_data:
-    for j in line2_data:
-        result = get_cross_coords(i, j)
-        # if result[0] != 0 and result[1] != 0:
-        print('intersection found: ', result)
+def dist_two_p(x1, y1, x2, y2):
+    return math.sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))
+
+
+def get_intersection_list(line1, line2):
+    intersections = []
+    for i in line1:
+        for j in line2:
+            result = get_cross_coords(i, j)
+            if result[0] != 0 and result[1] != 0:
+                intersections.append(result)
+    return intersections
+
+
+def min_manhattan(points):
+    min_man = 100000
+    for point in points:
+        if point[0] + point[1] < min_man:
+            min_man = point[0] + point[1]
+    return min_man
+
+
+w1_coords = get_coordinates((wires[0]))
+w2_coords = get_coordinates((wires[1]))
+
+
+print(w1_coords)
+print(w2_coords)
+
+line1_data = get_line_data(w1_coords)
+line2_data = get_line_data(w2_coords)
+
+print(line1_data)
+print(line2_data)
+
+
+print(get_intersection_list(line1_data, line2_data))
+
+intersection_points = get_intersection_list(line1_data, line2_data)
+
+
+print(min_manhattan(intersection_points))
+
+
