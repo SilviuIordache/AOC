@@ -2,8 +2,8 @@ const fs = require('fs');
 const readline = require('readline');
 
 const rl = readline.createInterface({
-  input: fs.createReadStream('./input.txt'),
-  //input: fs.createReadStream('./2019/5/input.txt'),
+  //input: fs.createReadStream('./input.txt'),
+  input: fs.createReadStream('./2019/5/input.txt'),
   output: process.stdout,
   terminal: false
 });
@@ -14,13 +14,19 @@ rl.on('line', function(line) {
 })
 
 
-let calculator = function(code, noun = 12, verb = 2) {
+let calculator = function(code, input = 5, noun = 12, verb = 2) {
   let arr = code.split(',').map(function(item) {
       return parseInt(item, 10);
   })
+
+  arr[0] = input;
   arr[1] = noun;
   arr[2] = verb;
+  
   let pos = 0;
+  let param1;
+  let param2;
+  let param3;
   while (arr[pos] != 99) {
     let currValue = arr[pos]
     let inst = getInstructionData(currValue);
@@ -29,48 +35,47 @@ let calculator = function(code, noun = 12, verb = 2) {
     val1 = arr[pos + 1]
     val2 = arr[pos + 2]
     dest = arr[pos + 3]
-    arg1 = mval(p1, arr[pos + 1], arr);
-    arg2 = mval(p2, arr[pos + 2], arr);
+    param1 = mval(p1, arr[pos + 1], arr);
+    param2 = mval(p2, arr[pos + 2], arr);
+    param3 = mval(p3, arr[pos + 3], arr);
 
     switch(opcode) {
       case 1:
-        arr[arr[pos + 3]] = arg1 + arg2;
+        arr[arr[pos + 3]] = param1 + param2;
         pos += 4;  
         break;
       case 2:
-        arr[arr[pos + 3]] = arg1* arg2;
+        arr[arr[pos + 3]] = param1* param2;
         pos += 4;  
         break;
       case 3:
-        arr[arr[pos + 1]] = arg1;
+        arr[arr[pos + 1]] = param1;
         pos += 2;
         break;
       case 4:
-        console.log(arg1)
+        console.log(param1)
         pos += 2;
         break;
       case 5:
-        if (arg1 != 0) {
-          arr[pos] = arg2
+        if (param1 != 0) {
+          arr[pos] = param2
+          break;
         }
-        break;
       case 6:
-        if (arg === 0) {
-          arr[pos] = arg2
+        if (param1 === 0) {
+          arr[pos] = param2
+          break;
         }
-        break;
       case 7:
-        if (arg1 < arg2) {
-          arr[p3] = 1;
+        if (param1 < param2) {
+          arr[param3] = 1;
         }
-        break;
       case 8:
-        if (arg1 === arg2) {
-          arr[p3] = 1
+        if (param1 === param2) {
+          arr[param3] = 1
         } else {
-          arr[p3] = 0
+          arr[param3] = 0
         }
-        break;
       default:
         pos += 4;
         break;
