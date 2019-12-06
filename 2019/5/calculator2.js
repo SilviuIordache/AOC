@@ -10,19 +10,15 @@ const rl = readline.createInterface({
 
 rl.on('line', function(line) {
   //console.log(calculator(line));
-  calculator(line, 5)
+  calculator(line)
 })
 
 
-let calculator = function(code, input = 5, noun = 12, verb = 2) {
+let calculator = function(code) {
   let arr = code.split(',').map(function(item) {
       return parseInt(item, 10);
   })
 
-  arr[0] = input;
-  arr[1] = noun;
-  arr[2] = verb;
-  
   let pos = 0;
   let param1;
   let param2;
@@ -49,8 +45,7 @@ let calculator = function(code, input = 5, noun = 12, verb = 2) {
         pos += 4;  
         break;
       case 3:
-        arr[arr[pos + 1]] = param1;
-        pos += 2;
+        arr[param1] = 5;
         break;
       case 4:
         console.log(param1)
@@ -69,15 +64,20 @@ let calculator = function(code, input = 5, noun = 12, verb = 2) {
       case 7:
         if (param1 < param2) {
           arr[param3] = 1;
+          pos += 4;
+          break;
         }
       case 8:
         if (param1 === param2) {
-          arr[param3] = 1
+          arr[param3] = 1;
+          pos +=4;
+          break;
         } else {
-          arr[param3] = 0
+          arr[param3] = 0;
+          pos +=4;
+          break;
         }
       default:
-        pos += 4;
         break;
     }
 

@@ -2,8 +2,8 @@ const fs = require('fs');
 const readline = require('readline');
 
 const rl = readline.createInterface({
-  input: fs.createReadStream('./input.txt'),
-  //input: fs.createReadStream('./2019/5/input.txt'),
+  //input: fs.createReadStream('./input.txt'),
+  input: fs.createReadStream('./2019/5/input.txt'),
   output: process.stdout,
   terminal: false
 });
