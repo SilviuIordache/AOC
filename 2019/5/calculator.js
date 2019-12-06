@@ -14,12 +14,10 @@ rl.on('line', function(line) {
 })
 
 
-let calculator = function(code, noun = 12, verb = 2) {
+let calculator = function(code, input = 1) {
   let arr = code.split(',').map(function(item) {
       return parseInt(item, 10);
   })
-  arr[1] = noun;
-  arr[2] = verb;
   let pos = 0;
   while (arr[pos] != 99) {
     let currValue = arr[pos]
@@ -42,7 +40,7 @@ let calculator = function(code, noun = 12, verb = 2) {
         pos += 4;  
         break;
       case 3:
-        arr[arr[pos + 1]] = arg1;
+        arr[arr[pos + 1]] = input;
         pos += 2;
         break;
       case 4:
