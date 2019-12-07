@@ -14,7 +14,7 @@ rl.on('line', function(line) {
 })
 
 
-let calculator = function(code, phase, input = 5) {
+let calculator = function(code, phase, input) {
   let arr = code.split(',').map(function(item) {
       return parseInt(item, 10);
   })
@@ -46,7 +46,7 @@ let calculator = function(code, phase, input = 5) {
         break;
       case 3:
         if (phaseSet === false) {
-          arr[arr[pos + 1]] = phase
+          arr[arr[pos + 1]] = phase;
           phaseSet = true;
         } else {
           arr[arr[pos + 1]] = input;
@@ -54,7 +54,7 @@ let calculator = function(code, phase, input = 5) {
         pos += 2;
         break;
       case 4:
-        return param1
+        return param1;
       case 5:
         pos = (param1 != 0) ? param2 : pos + 3
         break;
@@ -93,20 +93,40 @@ let getInstructionData = function(number) {
 }
 
 let getPermutations = function() {
-  cmb = Combinatorics.permutation([5, 6, 7, 8, 9]);
+   cmb = Combinatorics.permutation([5, 6, 7, 8, 9]);
   return cmb.toArray();
 }
 
 
 let amplifySignal= function (signal, module1Input, phaseSetting) {
 
-  module1 = calculator(signal, phaseSetting[0], module1Input)
-  module2 = calculator(signal, phaseSetting[1], module1)
-  module3 = calculator(signal, phaseSetting[2], module2)
-  module4 = calculator(signal, phaseSetting[3], module3)
-  module5 = calculator(signal, phaseSetting[4], module4)
+  modules = [0, 0, 0, 0, 0];
+  let val = calculator(signal, phaseSetting[0], module1Input)
+  modules[0] = val;
 
-  return module5;
+  let i = 1;
+  while (val) {
+    if( i % 5 != 0) {
+      newVal = calculator(signal, phaseSetting[i % 5], modules[(i % 5) - 1])
+      if (newVal) {
+        val = newVal;
+        modules[i % 5] = newVal
+      } else {
+        return val;
+      }
+    } else {
+      newVal = calculator(signal, phaseSetting[0], modules[4])
+      if (newVal) {
+        val = newVal;
+        modules[0] = newVal
+      } else {
+        return val;
+      }
+    }
+    i++;
+  }
+
+  return val;
 }
 
 let getHighestSignal = function(signal) {
@@ -118,23 +138,23 @@ let getHighestSignal = function(signal) {
     let currPhase = phases[i];
     let val = amplifySignal(signal, 0, currPhase);
 
-    while (val) {
-      if(val > maxSignal) {
-        maxSignal = val;
-        maxSignalPerm = phases[i]
-      }
-      val = amplifySignal(signal, val, currPhase);
+    if(val > maxSignal) {
+      maxSignal = val;
+      maxSignalPerm = phases[i]
     }
-    
   }
   
   console.log(maxSignal, maxSignalPerm);
 }
 
 
-let signal1 = '3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5';
-let signal2 = '3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10'
+let signal1 = '3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0';
+let signal2 = '3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10';
+let signal3 = '3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0';
 
-getHighestSignal(signal1)
-//getHighestSignal(signal2)
-// getHighestSignal(signal3)
+
+
+
+console.log(calculator(signal2, 5, 12));
+getHighestSignal(signal2);
+

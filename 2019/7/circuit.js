@@ -99,14 +99,16 @@ let getPermutations = function() {
 
 
 let amplifySignal= function (signal, phaseSetting) {
+  modules = [];
+  modules.push(calculator(signal, phaseSetting[0], 0))
 
-  module1 = calculator(signal, phaseSetting[0], 0)
-  module2 = calculator(signal, phaseSetting[1], module1)
-  module3 = calculator(signal, phaseSetting[2], module2)
-  module4 = calculator(signal, phaseSetting[3], module3)
-  module5 = calculator(signal, phaseSetting[4], module4)
+  i = 1;
+  while (i < 5) {
+    modules.push(calculator(signal, phaseSetting[i], modules[i - 1]))
+    i++;
+  }
 
-  return module5;
+  return modules[4];
 }
 
 let getHighestSignal = function(signal) {
@@ -132,6 +134,6 @@ let signal2 = '3,23,3,24,1002,24,10,24,1002,23,-1,23,101,5,23,23,1,24,23,23,4,23
 let signal3 = '3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1,33,31,31,1,32,31,31,4,31,99,0,0,0';
 
 
-// getHighestSignal(signal1)
-// getHighestSignal(signal2)
-// getHighestSignal(signal3)
+getHighestSignal(signal1)
+//getHighestSignal(signal2)
+//getHighestSignal(signal3)
