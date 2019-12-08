@@ -135,5 +135,5 @@ let signal3 = '3,31,3,32,1002,32,10,32,1001,31,-2,31,1007,31,0,33,1002,33,7,33,1
 
 
 getHighestSignal(signal1)
-//getHighestSignal(signal2)
-//getHighestSignal(signal3)
+getHighestSignal(signal2)
+getHighestSignal(signal3)

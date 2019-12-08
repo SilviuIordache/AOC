@@ -14,12 +14,8 @@ rl.on('line', function(line) {
 })
 
 
-let calculator = function(code, phase, input) {
-  let arr = code.split(',').map(function(item) {
-      return parseInt(item, 10);
-  })
-
-  let pos = 0;
+let calculator = function(arr, phase, input, pos) {
+  
   let param1;
   let param2;
   let phaseSet = false;
@@ -46,7 +42,7 @@ let calculator = function(code, phase, input) {
         break;
       case 3:
         if (phaseSet === false) {
-          arr[arr[pos + 1]] = phase;
+          arr[arr[pos + 1]] = phase
           phaseSet = true;
         } else {
           arr[arr[pos + 1]] = input;
@@ -54,7 +50,11 @@ let calculator = function(code, phase, input) {
         pos += 2;
         break;
       case 4:
-        return param1;
+        return {
+          output: param1,
+          pos,
+          arr
+        }
       case 5:
         pos = (param1 != 0) ? param2 : pos + 3
         break;
@@ -100,22 +100,26 @@ let getPermutations = function() {
 
 let amplifySignal= function (signal, module1Input, phaseSetting) {
 
+  let arr = signal.split(',').map(function(item) {
+    return parseInt(item, 10);
+  })
+
   modules = [0, 0, 0, 0, 0];
-  let val = calculator(signal, phaseSetting[0], module1Input)
+  let {output, pos, arr} = calculator(arr, phaseSetting[0], module1Input, 0)
   modules[0] = val;
 
   let i = 1;
-  while (val) {
-    if( i % 5 != 0) {
-      newVal = calculator(signal, phaseSetting[i % 5], modules[(i % 5) - 1])
-      if (newVal) {
-        val = newVal;
+  while (val != undefined) {
+    if (i % 5 != 0) {
+      let {output, pos, arr} = calculator(arr, phaseSetting[i % 5], modules[(i % 5) - 1])
+      if (output) {
+        val = output;
         modules[i % 5] = newVal
       } else {
         return val;
       }
     } else {
-      newVal = calculator(signal, phaseSetting[0], modules[4])
+      newVal = calculator(arr, phaseSetting[0], modules[4])
       if (newVal) {
         val = newVal;
         modules[0] = newVal
@@ -154,7 +158,6 @@ let signal3 = '3,15,3,16,1002,16,10,16,1,16,15,15,4,15,99,0,0';
 
 
 
-
-console.log(calculator(signal2, 5, 12));
-getHighestSignal(signal2);
+getHighestSignal(signal1);
+//console.log(calculator(signal2, 5, 0))
 
