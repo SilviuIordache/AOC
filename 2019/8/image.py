@@ -1,10 +1,7 @@
 with open("input.txt") as f:
     content = f.readlines()
 content = [x.strip() for x in content]
-
 image_data = content[0]
-
-#print(image_data)
 
 
 def split(word):
@@ -19,14 +16,12 @@ def get_layers_from_code(code, width, height):
         new_layer = split(code[pos:pos + img_size])
         layers.append(new_layer)
         pos += img_size
-
     return layers
 
 
 def find_min_digit_layer(digit, layers):
     min_digit_layer = -1
     min_digit_count = 100000
-
     for layer in layers:
         count = 0
         for i in layer:
@@ -35,7 +30,6 @@ def find_min_digit_layer(digit, layers):
         if count < min_digit_count:
             min_digit_count = count
             min_digit_layer = layer
-
     return min_digit_layer
 
 
@@ -55,12 +49,10 @@ def generate_final_img(layers, width, height):
     final_image = []
     for i in range(img_size):
         final_image.append(2)
-
     for layer in layers:
         for i in range(len(layer)):
             if layer[i] != 2 and final_image[i] == 2:
                 final_image[i] = layer[i]
-
     final_image_code = ''.join(str(e) for e in final_image)
     return final_image_code
 
@@ -77,13 +69,14 @@ def show_image_nicely(code, width, height):
         curr_line += 1
 
 
+# SOLUTIONS
 my_layers = get_layers_from_code(image_data, 25, 6)
 
 # PART 1
-min_digit_layer = find_min_digit_layer(0, my_layers)
-operation_result = operation_on_layer(1, 2, min_digit_layer)
+zero_min_digit_layer = find_min_digit_layer(0, my_layers)
+operation_result = operation_on_layer(1, 2, zero_min_digit_layer)
 # print(my_layers)
-# print(min_digit_layer)
+# print(zero_min_digit_layer)
 print(operation_result)
 
 # PART 2
