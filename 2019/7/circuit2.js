@@ -14,7 +14,7 @@ rl.on('line', function(line) {
 })
 
 
-let calculator = function(arr, phase, input, pos) {
+let calculator = function(arr, phase, input, pos = 0) {
   
   let param1;
   let param2;
@@ -53,7 +53,6 @@ let calculator = function(arr, phase, input, pos) {
         return {
           output: param1,
           pos,
-          arr
         }
       case 5:
         pos = (param1 != 0) ? param2 : pos + 3
@@ -105,13 +104,16 @@ let amplifySignal= function (signal, module1Input, phaseSetting) {
   })
 
   modules = [0, 0, 0, 0, 0];
-  let {output, pos, arr} = calculator(arr, phaseSetting[0], module1Input, 0)
+  let {output, pos} = calculator(arr, phaseSetting[0], module1Input, 0)
+
+  let c_output = output
+  let c_pos = pos
   modules[0] = val;
 
   let i = 1;
   while (val != undefined) {
     if (i % 5 != 0) {
-      let {output, pos, arr} = calculator(arr, phaseSetting[i % 5], modules[(i % 5) - 1])
+      let {output, pos, arr} = calculator(arr, phaseSetting[i % 5], output, pos)
       if (output) {
         val = output;
         modules[i % 5] = newVal
@@ -119,7 +121,7 @@ let amplifySignal= function (signal, module1Input, phaseSetting) {
         return val;
       }
     } else {
-      newVal = calculator(arr, phaseSetting[0], modules[4])
+      newVal = calculator(arr, phaseSetting[0], modules[4], pos)
       if (newVal) {
         val = newVal;
         modules[0] = newVal
